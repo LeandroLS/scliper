@@ -2,12 +2,15 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"html/template"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"strings"
+
+	"golang.org/x/net/html"
 )
 
 type FileDownloaded struct {
@@ -27,11 +30,12 @@ Created
 	handleErr(err)
 }
 
-func getSiteName() string {
-	var siteName string
+func getFlags() (string, string) {
+	var siteName, links string
 	flag.StringVar(&siteName, "site", "", "Site which you wanna download html")
+	flag.StringVar(&links, "links", "", "Inform a .html or a site to get all links")
 	flag.Parse()
-	return siteName
+	return siteName, links
 }
 
 func handleErr(err error) {
@@ -47,20 +51,47 @@ func createHtmlFile(name string) *os.File {
 	return file
 }
 
-func main() {
-	siteName := getSiteName()
-	if siteName == "" {
-		log.Fatalln("You need to specify a site to download the html")
+func visit(links []string, n *html.Node) []string {
+	if n.Type == html.ElementNode && n.Data == "a" {
+		for _, a := range n.Attr {
+			if a.Key == "href" {
+				links = append(links, a.Val)
+			}
+		}
 	}
-	resp, err := http.Get(siteName)
-	handleErr(err)
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	handleErr(err)
-	file := createHtmlFile(siteName)
-	file.Write(body)
-	fileStat, err := file.Stat()
-	handleErr(err)
-	FileDownloaded := FileDownloaded{fileStat.Name(), fileStat.Size()}
-	logCreatedFileMessage(FileDownloaded)
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		links = visit(links, c)
+	}
+	return links
+}
+
+func main() {
+	siteName, links := getFlags()
+
+	if links != "" {
+		sReader := strings.NewReader(string(body))
+		doc, err := html.Parse(sReader)
+		handleErr(err)
+		for _, link := range visit(nil, doc) {
+			fmt.Println(link)
+		}
+	}
+
+	if siteName != "" {
+		if siteName == "" {
+			log.Fatalln("You need to specify a site to download the html")
+		}
+		resp, err := http.Get(siteName)
+		handleErr(err)
+		defer resp.Body.Close()
+		body, err := io.ReadAll(resp.Body)
+		handleErr(err)
+		file := createHtmlFile(siteName)
+		file.Write(body)
+		fileStat, err := file.Stat()
+		handleErr(err)
+		FileDownloaded := FileDownloaded{fileStat.Name(), fileStat.Size()}
+		logCreatedFileMessage(FileDownloaded)
+	}
+
 }
