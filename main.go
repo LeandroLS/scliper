@@ -2,12 +2,25 @@ package main
 
 import (
 	"flag"
+	"html/template"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"strings"
 )
+
+type FileDownloaded struct {
+	Name string
+}
+
+func logCreatedFileMessage(file FileDownloaded) {
+	templateStr := "File {{ .Name }} created"
+	tmpl, err := template.New("test").Parse(templateStr)
+	handleErr(err)
+	err = tmpl.Execute(os.Stdout, file)
+	handleErr(err)
+}
 
 func getSiteName() string {
 	var siteName string
@@ -41,4 +54,6 @@ func main() {
 	handleErr(err)
 	file := createHtmlFile(siteName)
 	file.Write(body)
+	FileDownloaded := FileDownloaded{file.Name()}
+	logCreatedFileMessage(FileDownloaded)
 }
