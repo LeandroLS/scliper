@@ -12,10 +12,13 @@ import (
 
 type FileDownloaded struct {
 	Name string
+	Size int64
 }
 
 func logCreatedFileMessage(file FileDownloaded) {
-	templateStr := "File {{ .Name }} created"
+	templateStr := `File: {{ .Name }}
+Size: {{ .Size }} bytes
+Created`
 	tmpl, err := template.New("test").Parse(templateStr)
 	handleErr(err)
 	err = tmpl.Execute(os.Stdout, file)
@@ -54,6 +57,8 @@ func main() {
 	handleErr(err)
 	file := createHtmlFile(siteName)
 	file.Write(body)
-	FileDownloaded := FileDownloaded{file.Name()}
+	fileStat, err := file.Stat()
+	handleErr(err)
+	FileDownloaded := FileDownloaded{fileStat.Name(), fileStat.Size()}
 	logCreatedFileMessage(FileDownloaded)
 }
