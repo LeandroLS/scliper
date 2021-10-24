@@ -37,6 +37,6 @@ func main() {
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	handleErr(err)
-	file := createHtmlFile("teste")
+	file := createHtmlFile(siteName)
 	file.Write(body)
 }
