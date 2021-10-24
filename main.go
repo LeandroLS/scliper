@@ -16,9 +16,11 @@ type FileDownloaded struct {
 }
 
 func logCreatedFileMessage(file FileDownloaded) {
-	templateStr := `File: {{ .Name }}
+	templateStr := `--------------
+File: {{ .Name }}
 Size: {{ .Size }} bytes
-Created`
+Created
+--------------`
 	tmpl, err := template.New("test").Parse(templateStr)
 	handleErr(err)
 	err = tmpl.Execute(os.Stdout, file)
