@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 )
 
 func getSiteName() string {
@@ -22,6 +23,7 @@ func handleErr(err error) {
 }
 
 func createHtmlFile(name string) *os.File {
+	name = strings.Trim(name, "https://")
 	file, err := os.Create(name + ".html")
 	handleErr(err)
 	return file
