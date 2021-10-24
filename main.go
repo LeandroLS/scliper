@@ -1,11 +1,19 @@
 package main
 
 import (
+	"flag"
 	"io"
 	"log"
 	"net/http"
 	"os"
 )
+
+func getSiteName() string {
+	var siteName string
+	flag.StringVar(&siteName, "site", "", "Site which you wanna download html")
+	flag.Parse()
+	return siteName
+}
 
 func handleErr(err error) {
 	if err != nil {
@@ -20,7 +28,11 @@ func createHtmlFile(name string) *os.File {
 }
 
 func main() {
-	resp, err := http.Get("https://google.com.br")
+	siteName := getSiteName()
+	if siteName == "" {
+		log.Fatalln("You need to specify a site to download the html")
+	}
+	resp, err := http.Get(siteName)
 	handleErr(err)
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
