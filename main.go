@@ -65,10 +65,20 @@ func visit(links []string, n *html.Node) []string {
 	return links
 }
 
+func makeRequest(siteName string) *http.Response {
+	resp, err := http.Get(siteName)
+	handleErr(err)
+	return resp
+}
+
 func main() {
 	siteName, links := getFlags()
 
 	if links != "" {
+		resp := makeRequest(links)
+		defer resp.Body.Close()
+		body, err := io.ReadAll(resp.Body)
+		handleErr(err)
 		sReader := strings.NewReader(string(body))
 		doc, err := html.Parse(sReader)
 		handleErr(err)
@@ -81,8 +91,7 @@ func main() {
 		if siteName == "" {
 			log.Fatalln("You need to specify a site to download the html")
 		}
-		resp, err := http.Get(siteName)
-		handleErr(err)
+		resp := makeRequest(siteName)
 		defer resp.Body.Close()
 		body, err := io.ReadAll(resp.Body)
 		handleErr(err)
