@@ -2,15 +2,12 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"html/template"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"strings"
-
-	"golang.org/x/net/html"
 )
 
 type FileDownloaded struct {
@@ -51,21 +48,7 @@ func createHtmlFile(name string) *os.File {
 	return file
 }
 
-func visit(links []string, n *html.Node) []string {
-	if n.Type == html.ElementNode && n.Data == "a" {
-		for _, a := range n.Attr {
-			if a.Key == "href" {
-				links = append(links, a.Val)
-			}
-		}
-	}
-	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		links = visit(links, c)
-	}
-	return links
-}
-
-func makeRequest(siteName string) *http.Response {
+func MakeRequest(siteName string) *http.Response {
 	resp, err := http.Get(siteName)
 	handleErr(err)
 	return resp
@@ -73,25 +56,15 @@ func makeRequest(siteName string) *http.Response {
 
 func main() {
 	siteName, links := getFlags()
-
 	if links != "" {
-		resp := makeRequest(links)
-		defer resp.Body.Close()
-		body, err := io.ReadAll(resp.Body)
-		handleErr(err)
-		sReader := strings.NewReader(string(body))
-		doc, err := html.Parse(sReader)
-		handleErr(err)
-		for _, link := range visit(nil, doc) {
-			fmt.Println(link)
-		}
+		GetLinks(links)
 	}
 
 	if siteName != "" {
 		if siteName == "" {
 			log.Fatalln("You need to specify a site to download the html")
 		}
-		resp := makeRequest(siteName)
+		resp := MakeRequest(siteName)
 		defer resp.Body.Close()
 		body, err := io.ReadAll(resp.Body)
 		handleErr(err)
