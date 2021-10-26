@@ -44,9 +44,9 @@ type File struct {
 
 func LogCreatedFileMessage(file File) {
 	templateStr := `--------------
+File created! 😀
 File: {{ .Name }}
 Size: {{ .Size }} bytes
-Created
 --------------`
 	tmpl, err := template.New("test").Parse(templateStr)
 	HandleErr(err)
