@@ -30,8 +30,8 @@ func parseHtml(r io.Reader) *html.Node {
 	return doc
 }
 
-func getLinksFromSite(source string) {
-	resp := MakeRequest(source)
+func getLinksFromSite(site string) {
+	resp := MakeRequest(site)
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	HandleErr(err)
@@ -42,17 +42,22 @@ func getLinksFromSite(source string) {
 		fmt.Println(link)
 	}
 }
+
+func getLinksFromHtml(htmlFile string) {
+	bytes, err := os.ReadFile(htmlFile)
+	HandleErr(err)
+	sReader := strings.NewReader(string(bytes))
+	doc := parseHtml(sReader)
+	for _, link := range Visit(nil, doc) {
+		fmt.Println(link)
+	}
+}
+
 func GetLinksFrom(source string) {
 	isHtml, err := regexp.MatchString(`\.html$`, source)
 	HandleErr(err)
 	if isHtml {
-		bytes, err := os.ReadFile(source)
-		HandleErr(err)
-		sReader := strings.NewReader(string(bytes))
-		doc := parseHtml(sReader)
-		for _, link := range Visit(nil, doc) {
-			fmt.Println(link)
-		}
+		getLinksFromHtml(source)
 	} else {
 		getLinksFromSite(source)
 	}
