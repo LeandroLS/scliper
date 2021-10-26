@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io"
 	"os"
 	"regexp"
@@ -30,7 +29,14 @@ func parseHtml(r io.Reader) *html.Node {
 	return doc
 }
 
-func getLinksFromSite(site string) {
+func createTxtLinksFile(name string) *os.File {
+	name = strings.Trim(name, "https://")
+	file, err := os.Create(name + ".txt")
+	HandleErr(err)
+	return file
+}
+
+func getLinksFromSite(site string) []string {
 	resp := MakeRequest(site)
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
@@ -38,28 +44,34 @@ func getLinksFromSite(site string) {
 	sReader := strings.NewReader(string(body))
 	doc := parseHtml(sReader)
 	HandleErr(err)
-	for _, link := range Visit(nil, doc) {
-		fmt.Println(link)
-	}
+	links := Visit(nil, doc)
+	return links
 }
 
-func getLinksFromHtml(htmlFile string) {
+func getLinksFromHtml(htmlFile string) []string {
 	bytes, err := os.ReadFile(htmlFile)
 	HandleErr(err)
 	sReader := strings.NewReader(string(bytes))
 	doc := parseHtml(sReader)
-	for _, link := range Visit(nil, doc) {
-		fmt.Println(link)
-	}
+	links := Visit(nil, doc)
+	return links
 }
 
 func GetLinksFrom(source string) {
 	isHtml, err := regexp.MatchString(`\.html$`, source)
 	HandleErr(err)
+	var links []string
 	if isHtml {
-		getLinksFromHtml(source)
+		links = append(links, getLinksFromHtml(source)...)
 	} else {
-		getLinksFromSite(source)
+		links = append(links, getLinksFromSite(source)...)
 	}
-
+	linksBytes := make([]byte, 0)
+	for i := 0; i < len(links); i++ {
+		bLink := []byte(links[i])
+		linksBytes = append(linksBytes, bLink...)
+	}
+	file := createTxtLinksFile(source)
+	_, err = file.Write(linksBytes)
+	HandleErr(err)
 }
