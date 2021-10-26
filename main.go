@@ -10,23 +10,6 @@ import (
 	"strings"
 )
 
-type FileDownloaded struct {
-	Name string
-	Size int64
-}
-
-func logCreatedFileMessage(file FileDownloaded) {
-	templateStr := `--------------
-File: {{ .Name }}
-Size: {{ .Size }} bytes
-Created
---------------`
-	tmpl, err := template.New("test").Parse(templateStr)
-	HandleErr(err)
-	err = tmpl.Execute(os.Stdout, file)
-	HandleErr(err)
-}
-
 func getFlags() (string, string) {
 	var siteName, links string
 	flag.StringVar(&siteName, "html-from", "", "Site which you wanna download html")
@@ -54,6 +37,23 @@ func MakeRequest(siteName string) *http.Response {
 	return resp
 }
 
+type File struct {
+	Name string
+	Size int64
+}
+
+func LogCreatedFileMessage(file File) {
+	templateStr := `--------------
+File: {{ .Name }}
+Size: {{ .Size }} bytes
+Created
+--------------`
+	tmpl, err := template.New("test").Parse(templateStr)
+	HandleErr(err)
+	err = tmpl.Execute(os.Stdout, file)
+	HandleErr(err)
+}
+
 func downloadHtmlFromSite(siteName string) {
 	resp := MakeRequest(siteName)
 	defer resp.Body.Close()
@@ -63,8 +63,8 @@ func downloadHtmlFromSite(siteName string) {
 	file.Write(body)
 	fileStat, err := file.Stat()
 	HandleErr(err)
-	FileDownloaded := FileDownloaded{fileStat.Name(), fileStat.Size()}
-	logCreatedFileMessage(FileDownloaded)
+	FileDownloaded := File{fileStat.Name(), fileStat.Size()}
+	LogCreatedFileMessage(FileDownloaded)
 }
 
 func main() {

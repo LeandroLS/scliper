@@ -31,7 +31,7 @@ func parseHtml(r io.Reader) *html.Node {
 
 func createTxtLinksFile(name string) *os.File {
 	name = strings.Trim(name, "https://")
-	file, err := os.Create(name + ".txt")
+	file, err := os.Create(name + "-links.txt")
 	HandleErr(err)
 	return file
 }
@@ -72,6 +72,10 @@ func GetLinksFrom(source string) {
 		linksBytes = append(linksBytes, bLink...)
 	}
 	file := createTxtLinksFile(source)
+	fileStat, err := file.Stat()
+	HandleErr(err)
+	FileDownloaded := File{fileStat.Name(), fileStat.Size()}
+	LogCreatedFileMessage(FileDownloaded)
 	_, err = file.Write(linksBytes)
 	HandleErr(err)
 }
