@@ -66,16 +66,15 @@ func GetLinksFrom(source string) {
 	} else {
 		links = append(links, getLinksFromSite(source)...)
 	}
-	linksBytes := make([]byte, 0)
+	var strWithLinks string
 	for i := 0; i < len(links); i++ {
-		bLink := []byte(links[i])
-		linksBytes = append(linksBytes, bLink...)
+		strWithLinks += links[i] + "\n"
 	}
 	file := createTxtLinksFile(source)
 	fileStat, err := file.Stat()
 	HandleErr(err)
 	FileDownloaded := File{fileStat.Name(), fileStat.Size()}
 	LogCreatedFileMessage(FileDownloaded)
-	_, err = file.Write(linksBytes)
+	_, err = file.Write([]byte(strWithLinks))
 	HandleErr(err)
 }
