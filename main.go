@@ -42,14 +42,20 @@ type File struct {
 	Size int64
 }
 
-func LogCreatedFileMessage(file File) {
+func LogCreatedFileMessage(file File, fileType string) {
 	templateStr := `-------------------
-File created! 😀
-File: {{ .Name }}
+{{ type }} file created! 😀
+Name: {{ .Name }}
 Size: {{ .Size }} bytes
 -------------------
 `
-	tmpl, err := template.New("test").Parse(templateStr)
+	tmpl, err := template.New("test").Funcs(template.FuncMap{"type": func() string {
+		if fileType == "HTML" {
+			return "HTML"
+		} else {
+			return "Links"
+		}
+	}}).Parse(templateStr)
 	HandleErr(err)
 	err = tmpl.Execute(os.Stdout, file)
 	HandleErr(err)
@@ -65,7 +71,7 @@ func downloadHtmlFromSite(siteName string) {
 	fileStat, err := file.Stat()
 	HandleErr(err)
 	FileDownloaded := File{fileStat.Name(), fileStat.Size()}
-	LogCreatedFileMessage(FileDownloaded)
+	LogCreatedFileMessage(FileDownloaded, "HTML")
 }
 
 func main() {

@@ -74,7 +74,7 @@ func GetLinksFrom(source string) {
 	fileStat, err := file.Stat()
 	HandleErr(err)
 	FileDownloaded := File{fileStat.Name(), fileStat.Size()}
-	LogCreatedFileMessage(FileDownloaded)
+	LogCreatedFileMessage(FileDownloaded, "Links")
 	_, err = file.Write([]byte(strWithLinks))
 	HandleErr(err)
 }
