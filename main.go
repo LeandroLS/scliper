@@ -11,11 +11,11 @@ import (
 )
 
 func getFlags() (string, string) {
-	var siteName, links string
-	flag.StringVar(&siteName, "html-from", "", "Site which you wanna download html")
+	var site, links string
+	flag.StringVar(&site, "html-from", "", "Site which you wanna download html")
 	flag.StringVar(&links, "links-from", "", "Inform a .html or a site to get all links")
 	flag.Parse()
-	return siteName, links
+	return site, links
 }
 
 func HandleErr(err error) {
@@ -31,8 +31,8 @@ func createHtmlFile(name string) *os.File {
 	return file
 }
 
-func MakeRequest(siteName string) *http.Response {
-	resp, err := http.Get(siteName)
+func MakeRequest(site string) *http.Response {
+	resp, err := http.Get(site)
 	HandleErr(err)
 	return resp
 }
@@ -61,12 +61,12 @@ Size: {{ .Size }} bytes
 	HandleErr(err)
 }
 
-func downloadHtmlFromSite(siteName string) {
-	resp := MakeRequest(siteName)
+func downloadHtmlFromSite(site string) {
+	resp := MakeRequest(site)
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	HandleErr(err)
-	file := createHtmlFile(siteName)
+	file := createHtmlFile(site)
 	file.Write(body)
 	fileStat, err := file.Stat()
 	HandleErr(err)
@@ -75,13 +75,13 @@ func downloadHtmlFromSite(siteName string) {
 }
 
 func main() {
-	siteName, linkSource := getFlags()
+	site, linkSource := getFlags()
 	if linkSource != "" {
 		GetLinksFrom(linkSource)
 	}
 
-	if siteName != "" {
-		downloadHtmlFromSite(siteName)
+	if site != "" {
+		downloadHtmlFromSite(site)
 	}
 
 }
