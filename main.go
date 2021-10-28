@@ -3,11 +3,9 @@ package main
 import (
 	"flag"
 	"html/template"
-	"io"
 	"log"
 	"net/http"
 	"os"
-	"strings"
 )
 
 func getFlags() (string, string) {
@@ -22,13 +20,6 @@ func HandleErr(err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-}
-
-func createHtmlFile(name string) *os.File {
-	name = strings.Trim(name, "https://")
-	file, err := os.Create(name + ".html")
-	HandleErr(err)
-	return file
 }
 
 func MakeRequest(site string) *http.Response {
@@ -61,19 +52,6 @@ Size: {{ .Size }} bytes
 	HandleErr(err)
 }
 
-func downloadHtmlFromSite(site string) {
-	resp := MakeRequest(site)
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	HandleErr(err)
-	file := createHtmlFile(site)
-	file.Write(body)
-	fileStat, err := file.Stat()
-	HandleErr(err)
-	FileDownloaded := File{fileStat.Name(), fileStat.Size()}
-	LogCreatedFileMessage(FileDownloaded, "HTML")
-}
-
 func main() {
 	site, linkSource := getFlags()
 	if linkSource != "" {
@@ -81,7 +59,7 @@ func main() {
 	}
 
 	if site != "" {
-		downloadHtmlFromSite(site)
+		DownloadHtmlFromSite(site)
 	}
 
 }
