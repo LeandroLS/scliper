@@ -57,6 +57,19 @@ func getLinksFromHtml(htmlFile string) []string {
 	return links
 }
 
+func writeInTxtLinksFile(file *os.File, links []string) {
+	var strWithLinks string
+	for i := 0; i < len(links); i++ {
+		strWithLinks += links[i] + "\n"
+	}
+	fileStat, err := file.Stat()
+	HandleErr(err)
+	FileDownloaded := File{fileStat.Name(), fileStat.Size()}
+	LogCreatedFileMessage(FileDownloaded, "Links")
+	_, err = file.Write([]byte(strWithLinks))
+	HandleErr(err)
+}
+
 func GetLinksFrom(source string) {
 	isHtml, err := regexp.MatchString(`\.html$`, source)
 	HandleErr(err)
@@ -66,15 +79,7 @@ func GetLinksFrom(source string) {
 	} else {
 		links = append(links, getLinksFromSite(source)...)
 	}
-	var strWithLinks string
-	for i := 0; i < len(links); i++ {
-		strWithLinks += links[i] + "\n"
-	}
 	file := createTxtLinksFile(source)
-	fileStat, err := file.Stat()
-	HandleErr(err)
-	FileDownloaded := File{fileStat.Name(), fileStat.Size()}
-	LogCreatedFileMessage(FileDownloaded, "Links")
-	_, err = file.Write([]byte(strWithLinks))
-	HandleErr(err)
+	writeInTxtLinksFile(file, links)
+
 }
