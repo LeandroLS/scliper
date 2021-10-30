@@ -63,14 +63,6 @@ func getLinksFromHtml(htmlFile string) []string {
 	return links
 }
 
-func Map(vs []string, f func(string) string) []string {
-	vsm := make([]string, len(vs))
-	for i, v := range vs {
-		vsm[i] = f(v)
-	}
-	return vsm
-}
-
 func writeInTxtLinksFile(file *os.File, links []string) {
 	var strWithLinks string
 	for i := 0; i < len(links); i++ {
