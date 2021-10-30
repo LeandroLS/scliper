@@ -45,6 +45,12 @@ func getLinksFromSite(site string) []string {
 	doc := parseHtml(sReader)
 	HandleErr(err)
 	links := Visit(nil, doc)
+	links = Map(links, func(link string) string {
+		url, err := resp.Request.URL.Parse(link)
+		HandleErr(err)
+		link = url.String()
+		return link
+	})
 	return links
 }
 
@@ -55,6 +61,14 @@ func getLinksFromHtml(htmlFile string) []string {
 	doc := parseHtml(sReader)
 	links := Visit(nil, doc)
 	return links
+}
+
+func Map(vs []string, f func(string) string) []string {
+	vsm := make([]string, len(vs))
+	for i, v := range vs {
+		vsm[i] = f(v)
+	}
+	return vsm
 }
 
 func writeInTxtLinksFile(file *os.File, links []string) {
