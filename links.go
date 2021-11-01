@@ -58,7 +58,7 @@ func writeInLinksJsonFile(file *os.File, links []string) {
 	}
 	fileStat, err := file.Stat()
 	HandleErr(err)
-	jsonLinks, err := json.Marshal(links)
+	jsonLinks, err := json.MarshalIndent(links, "", "	")
 	HandleErr(err)
 	FileDownloaded := File{fileStat.Name(), fileStat.Size()}
 	LogCreatedFileMessage(FileDownloaded, "Links")
