@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"os"
 	"regexp"
@@ -52,13 +51,6 @@ func getLinksFromHtml(htmlFile string) []string {
 	return links
 }
 
-func createJsonFile(name string) *os.File {
-	name = CleanString(name)
-	file, err := os.Create(fmt.Sprintf("%s-links.json", name))
-	HandleErr(err)
-	return file
-}
-
 func writeInLinksJsonFile(file *os.File, links []string) {
 	var strWithLinks string
 	for i := 0; i < len(links); i++ {
@@ -83,7 +75,7 @@ func GetLinksFrom(source string) {
 	} else {
 		links = append(links, getLinksFromSite(source)...)
 	}
-	file := createJsonFile(source)
+	file := CreateFile(source, "-links.json")
 	writeInLinksJsonFile(file, links)
 
 }

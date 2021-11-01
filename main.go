@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"html/template"
 	"io"
 	"log"
@@ -11,15 +12,6 @@ import (
 
 	"golang.org/x/net/html"
 )
-
-func getFlags() (string, string, string) {
-	var site, links, images string
-	flag.StringVar(&site, "html-from", "", "Inform a site which you wanna download html")
-	flag.StringVar(&links, "links-from", "", "Inform a .html or a site/link to get all links")
-	flag.StringVar(&images, "images-from", "", "Inform a .html or a site/link to get all images")
-	flag.Parse()
-	return site, links, images
-}
 
 func HandleErr(err error) {
 	if err != nil {
@@ -42,6 +34,13 @@ func ParseHtml(r io.Reader) *html.Node {
 	doc, err := html.Parse(r)
 	HandleErr(err)
 	return doc
+}
+
+func CreateFile(name string, suffix string) *os.File {
+	name = CleanString(name)
+	file, err := os.Create(fmt.Sprintf("%s%s", name, suffix))
+	HandleErr(err)
+	return file
 }
 
 func CleanString(name string) string {
@@ -74,6 +73,15 @@ Size: {{ .Size }} bytes
 	HandleErr(err)
 	err = tmpl.Execute(os.Stdout, file)
 	HandleErr(err)
+}
+
+func getFlags() (string, string, string) {
+	var site, links, images string
+	flag.StringVar(&site, "html-from", "", "Inform a site which you wanna download html")
+	flag.StringVar(&links, "links-from", "", "Inform a .html or a site/link to get all links")
+	flag.StringVar(&images, "images-from", "", "Inform a .html or a site/link to get all images")
+	flag.Parse()
+	return site, links, images
 }
 
 func main() {

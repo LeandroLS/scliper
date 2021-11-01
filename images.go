@@ -37,13 +37,6 @@ func writeInImgHtmlFile(file *os.File, links []string) {
 	HandleErr(err)
 }
 
-func createHtmlImagesFile(name string) *os.File {
-	name = CleanString(name)
-	file, err := os.Create(name + "-images.html")
-	HandleErr(err)
-	return file
-}
-
 func GetImages(source string) {
 	resp := MakeRequest(source)
 	defer resp.Body.Close()
@@ -59,6 +52,6 @@ func GetImages(source string) {
 		link = url.String()
 		return link
 	})
-	file := createHtmlImagesFile(source)
+	file := CreateFile(source, "-images.html")
 	writeInImgHtmlFile(file, links)
 }
