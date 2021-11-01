@@ -38,7 +38,7 @@ func writeInImgHtmlFile(file *os.File, links []string) {
 }
 
 func createHtmlImagesFile(name string) *os.File {
-	name = strings.Trim(name, "https://")
+	name = CleanString(name)
 	file, err := os.Create(name + "-images.html")
 	HandleErr(err)
 	return file

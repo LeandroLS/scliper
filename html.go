@@ -3,7 +3,6 @@ package main
 import (
 	"io"
 	"os"
-	"strings"
 )
 
 func DownloadHtmlFromSite(site string) {
@@ -20,7 +19,7 @@ func DownloadHtmlFromSite(site string) {
 }
 
 func createHtmlFile(name string) *os.File {
-	name = strings.Trim(name, "https://")
+	name = CleanString(name)
 	file, err := os.Create(name + ".html")
 	HandleErr(err)
 	return file

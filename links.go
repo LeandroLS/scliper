@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"regexp"
@@ -30,8 +31,8 @@ func parseHtml(r io.Reader) *html.Node {
 }
 
 func createTxtLinksFile(name string) *os.File {
-	name = strings.Trim(name, "https://")
-	file, err := os.Create(name + "-links.txt")
+	name = CleanString(name)
+	file, err := os.Create(fmt.Sprintf("%s-links.txt", name))
 	HandleErr(err)
 	return file
 }

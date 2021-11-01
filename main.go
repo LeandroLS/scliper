@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 )
 
 func getFlags() (string, string, string) {
@@ -33,6 +34,12 @@ func MakeRequest(site string) *http.Response {
 	resp, err := http.Get(site)
 	HandleErr(err)
 	return resp
+}
+
+func CleanString(name string) string {
+	name = strings.ReplaceAll(name, "https://", "")
+	name = strings.ReplaceAll(name, "/", "-")
+	return name
 }
 
 type File struct {
