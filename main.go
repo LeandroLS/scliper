@@ -64,11 +64,11 @@ Size: {{ .Size }} bytes
 `
 	tmpl, err := template.New("test").Funcs(template.FuncMap{"type": func() string {
 		if fileType == "HTML" {
-			return "HTML"
+			return "HTML .html"
 		} else if fileType == "Links" {
-			return "Links"
+			return "Links .json"
 		} else {
-			return "Images"
+			return "Images .html"
 		}
 	}}).Parse(templateStr)
 	HandleErr(err)
