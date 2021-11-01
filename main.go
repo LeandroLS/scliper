@@ -3,10 +3,13 @@ package main
 import (
 	"flag"
 	"html/template"
+	"io"
 	"log"
 	"net/http"
 	"os"
 	"strings"
+
+	"golang.org/x/net/html"
 )
 
 func getFlags() (string, string, string) {
@@ -34,6 +37,11 @@ func MakeRequest(site string) *http.Response {
 	resp, err := http.Get(site)
 	HandleErr(err)
 	return resp
+}
+func ParseHtml(r io.Reader) *html.Node {
+	doc, err := html.Parse(r)
+	HandleErr(err)
+	return doc
 }
 
 func CleanString(name string) string {

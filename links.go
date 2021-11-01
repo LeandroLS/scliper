@@ -24,26 +24,13 @@ func Visit(links []string, n *html.Node) []string {
 	return links
 }
 
-func parseHtml(r io.Reader) *html.Node {
-	doc, err := html.Parse(r)
-	HandleErr(err)
-	return doc
-}
-
-func createTxtLinksFile(name string) *os.File {
-	name = CleanString(name)
-	file, err := os.Create(fmt.Sprintf("%s-links.txt", name))
-	HandleErr(err)
-	return file
-}
-
 func getLinksFromSite(site string) []string {
 	resp := MakeRequest(site)
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	HandleErr(err)
 	sReader := strings.NewReader(string(body))
-	doc := parseHtml(sReader)
+	doc := ParseHtml(sReader)
 	HandleErr(err)
 	links := Visit(nil, doc)
 	links = Map(links, func(link string) string {
@@ -59,9 +46,16 @@ func getLinksFromHtml(htmlFile string) []string {
 	bytes, err := os.ReadFile(htmlFile)
 	HandleErr(err)
 	sReader := strings.NewReader(string(bytes))
-	doc := parseHtml(sReader)
+	doc := ParseHtml(sReader)
 	links := Visit(nil, doc)
 	return links
+}
+
+func createTxtLinksFile(name string) *os.File {
+	name = CleanString(name)
+	file, err := os.Create(fmt.Sprintf("%s-links.txt", name))
+	HandleErr(err)
+	return file
 }
 
 func writeInTxtLinksFile(file *os.File, links []string) {

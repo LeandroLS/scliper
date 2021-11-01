@@ -50,7 +50,7 @@ func GetImages(source string) {
 	body, err := io.ReadAll(resp.Body)
 	HandleErr(err)
 	sReader := strings.NewReader(string(body))
-	doc := parseHtml(sReader)
+	doc := ParseHtml(sReader)
 	HandleErr(err)
 	links := VisitImages(nil, doc)
 	links = Map(links, func(link string) string {
