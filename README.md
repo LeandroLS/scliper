@@ -8,5 +8,5 @@ CLI Tool to make simple web scraping.
 
 ### Options
 `-html-from` create a HTML file with source HTML from informed site  
-`-links-from` create a .txt file with all links from site or html file informed   
+`-links-from` create a .json file with all links from site or html file informed   
 `-images-from` create a HTML file with all images tag from informed site  

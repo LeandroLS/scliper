@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -51,23 +52,25 @@ func getLinksFromHtml(htmlFile string) []string {
 	return links
 }
 
-func createTxtLinksFile(name string) *os.File {
+func createJsonFile(name string) *os.File {
 	name = CleanString(name)
-	file, err := os.Create(fmt.Sprintf("%s-links.txt", name))
+	file, err := os.Create(fmt.Sprintf("%s-links.json", name))
 	HandleErr(err)
 	return file
 }
 
-func writeInTxtLinksFile(file *os.File, links []string) {
+func writeInLinksJsonFile(file *os.File, links []string) {
 	var strWithLinks string
 	for i := 0; i < len(links); i++ {
 		strWithLinks += links[i] + "\n"
 	}
 	fileStat, err := file.Stat()
 	HandleErr(err)
+	jsonLinks, err := json.Marshal(links)
+	HandleErr(err)
 	FileDownloaded := File{fileStat.Name(), fileStat.Size()}
 	LogCreatedFileMessage(FileDownloaded, "Links")
-	_, err = file.Write([]byte(strWithLinks))
+	_, err = file.Write(jsonLinks)
 	HandleErr(err)
 }
 
@@ -80,7 +83,7 @@ func GetLinksFrom(source string) {
 	} else {
 		links = append(links, getLinksFromSite(source)...)
 	}
-	file := createTxtLinksFile(source)
-	writeInTxtLinksFile(file, links)
+	file := createJsonFile(source)
+	writeInLinksJsonFile(file, links)
 
 }
