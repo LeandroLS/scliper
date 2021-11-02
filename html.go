@@ -10,7 +10,7 @@ func DownloadHtmlFromSite(site string) {
 	body, err := io.ReadAll(resp.Body)
 	HandleErr(err)
 	file := CreateFile(site, ".html")
-	file.Write(body)
+	WriteInFile(file, body)
 	fileStat, err := file.Stat()
 	HandleErr(err)
 	FileDownloaded := File{fileStat.Name(), fileStat.Size()}

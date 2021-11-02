@@ -43,8 +43,14 @@ func CreateFile(name string, suffix string) *os.File {
 	return file
 }
 
+func WriteInFile(file *os.File, content []byte) {
+	_, err := file.Write(content)
+	HandleErr(err)
+}
+
 func CleanString(name string) string {
 	name = strings.ReplaceAll(name, "https://", "")
+	name = strings.ReplaceAll(name, "http://", "")
 	name = strings.ReplaceAll(name, "/", "-")
 	return name
 }

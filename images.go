@@ -33,8 +33,7 @@ func writeInImgHtmlFile(file *os.File, links []string) {
 	HandleErr(err)
 	FileDownloaded := File{fileStat.Name(), fileStat.Size()}
 	LogCreatedFileMessage(FileDownloaded, "Images")
-	_, err = file.Write([]byte(strWithLinks))
-	HandleErr(err)
+	WriteInFile(file, []byte(strWithLinks))
 }
 
 func GetImages(source string) {
