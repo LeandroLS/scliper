@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"golang.org/x/net/html"
@@ -69,26 +70,28 @@ func CleanString(name string) string {
 }
 
 type File struct {
-	Name string
-	Size int64
+	Name      string
+	Size      int64
+	Extension string
+}
+
+func CreateFileStruct(file *os.File) File {
+	fileStat, err := file.Stat()
+	HandleErr(err)
+	fileExtension := filepath.Ext(file.Name())
+	fileCreated := File{fileStat.Name(), fileStat.Size(), fileExtension}
+	return fileCreated
 }
 
 func LogCreatedFileMessage(file File, fileType string) {
 	templateStr := `-------------------
-{{ type }} file created! 😀
+File created! 😀
 Name: {{ .Name }}
 Size: {{ .Size }} bytes
+Extension: {{ .Extension }}
 -------------------
 `
-	tmpl, err := template.New("test").Funcs(template.FuncMap{"type": func() string {
-		if fileType == "HTML" {
-			return "HTML .html"
-		} else if fileType == "Links" {
-			return "Links .json"
-		} else {
-			return "Images .html"
-		}
-	}}).Parse(templateStr)
+	tmpl, err := template.New("LogMessage").Parse(templateStr)
 	HandleErr(err)
 	err = tmpl.Execute(os.Stdout, file)
 	HandleErr(err)

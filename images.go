@@ -12,10 +12,8 @@ func writeInImgHtmlFile(file *os.File, links []string) {
 	for i := 0; i < len(links); i++ {
 		strWithLinks += fmt.Sprintf("<img src=\"%s\"></img> \n", links[i])
 	}
-	fileStat, err := file.Stat()
-	HandleErr(err)
-	FileDownloaded := File{fileStat.Name(), fileStat.Size()}
-	LogCreatedFileMessage(FileDownloaded, "Images")
+	fileCreated := CreateFileStruct(file)
+	LogCreatedFileMessage(fileCreated, "Images")
 	WriteInFile(file, []byte(strWithLinks))
 }
 
