@@ -27,7 +27,7 @@ func GetImages(source string) {
 	sReader := strings.NewReader(string(body))
 	doc := ParseHtml(sReader)
 	HandleErr(err)
-	links := GetHtmlTags(doc, "img", "href", nil)
+	links := GetHtmlTags(doc, "img", "src", nil)
 	links = Map(links, func(link string) string {
 		url, err := resp.Request.URL.Parse(link)
 		HandleErr(err)
