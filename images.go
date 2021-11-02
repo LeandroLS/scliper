@@ -5,24 +5,7 @@ import (
 	"io"
 	"os"
 	"strings"
-
-	"golang.org/x/net/html"
 )
-
-func VisitImages(links []string, n *html.Node) []string {
-	if n.Type == html.ElementNode && n.Data == "img" {
-		for _, a := range n.Attr {
-			if a.Key == "src" {
-				links = append(links, a.Val)
-			}
-		}
-	}
-	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		links = VisitImages(links, c)
-	}
-
-	return links
-}
 
 func writeInImgHtmlFile(file *os.File, links []string) {
 	var strWithLinks string
@@ -44,7 +27,7 @@ func GetImages(source string) {
 	sReader := strings.NewReader(string(body))
 	doc := ParseHtml(sReader)
 	HandleErr(err)
-	links := VisitImages(nil, doc)
+	links := GetHtmlTags(doc, "img", "href", nil)
 	links = Map(links, func(link string) string {
 		url, err := resp.Request.URL.Parse(link)
 		HandleErr(err)

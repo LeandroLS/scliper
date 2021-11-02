@@ -48,6 +48,20 @@ func WriteInFile(file *os.File, content []byte) {
 	HandleErr(err)
 }
 
+func GetHtmlTags(n *html.Node, rawHtmlTag string, htmlTagKey string, tags []string) []string {
+	if n.Type == html.ElementNode && n.Data == rawHtmlTag {
+		for _, a := range n.Attr {
+			if a.Key == htmlTagKey {
+				tags = append(tags, a.Val)
+			}
+		}
+	}
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		tags = GetHtmlTags(c, rawHtmlTag, htmlTagKey, tags)
+	}
+	return tags
+}
+
 func CleanString(name string) string {
 	name = strings.ReplaceAll(name, "https://", "")
 	name = strings.ReplaceAll(name, "http://", "")

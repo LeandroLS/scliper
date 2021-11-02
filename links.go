@@ -6,23 +6,7 @@ import (
 	"os"
 	"regexp"
 	"strings"
-
-	"golang.org/x/net/html"
 )
-
-func Visit(links []string, n *html.Node) []string {
-	if n.Type == html.ElementNode && n.Data == "a" {
-		for _, a := range n.Attr {
-			if a.Key == "href" {
-				links = append(links, a.Val)
-			}
-		}
-	}
-	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		links = Visit(links, c)
-	}
-	return links
-}
 
 func getLinksFromSite(site string) []string {
 	resp := MakeRequest(site)
@@ -32,7 +16,7 @@ func getLinksFromSite(site string) []string {
 	sReader := strings.NewReader(string(body))
 	doc := ParseHtml(sReader)
 	HandleErr(err)
-	links := Visit(nil, doc)
+	links := GetHtmlTags(doc, "a", "href", nil)
 	links = Map(links, func(link string) string {
 		url, err := resp.Request.URL.Parse(link)
 		HandleErr(err)
@@ -47,7 +31,7 @@ func getLinksFromHtml(htmlFile string) []string {
 	HandleErr(err)
 	sReader := strings.NewReader(string(bytes))
 	doc := ParseHtml(sReader)
-	links := Visit(nil, doc)
+	links := GetHtmlTags(doc, "a", "href", nil)
 	return links
 }
 
