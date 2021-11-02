@@ -11,8 +11,6 @@ func DownloadHtmlFromSite(site string) {
 	HandleErr(err)
 	file := CreateFile(site, ".html")
 	WriteInFile(file, body)
-	fileStat, err := file.Stat()
-	HandleErr(err)
-	FileDownloaded := File{fileStat.Name(), fileStat.Size()}
-	LogCreatedFileMessage(FileDownloaded, "HTML")
+	fileCreated := CreateFileStruct(file)
+	LogCreatedFileMessage(fileCreated, "HTML")
 }
