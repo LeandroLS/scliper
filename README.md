@@ -1,3 +1,4 @@
+
 # scliper :spider_web:
 CLI Tool to make simple web scraping.
 
@@ -10,3 +11,7 @@ CLI Tool to make simple web scraping.
 `-html-from` create a HTML file with source HTML from informed site  
 `-links-from` create a JSON file with all links from site or html file informed   
 `-images-from` create a HTML file with all images tag from informed site  
+
+#### Badges
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/LeandroLS/scliper/Go)
+![Release](https://img.shields.io/github/v/release/LeandroLS/scliper?include_prereleases)
