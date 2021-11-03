@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -60,4 +62,18 @@ func TestCreateFileStruct(t *testing.T) {
 	fileStruct := CreateFileStruct(file)
 	file.Close()
 	checkIfIsExpected(t, fileStruct.Extension, extension)
+}
+
+func TestGetHtmlTags(t *testing.T) {
+	sReader := strings.NewReader(`
+	<a href="test1.golang">
+	<a href="test2.golang">
+`)
+	htmlNode := ParseHtml(sReader)
+	fmt.Println(htmlNode)
+	tags := GetHtmlTags(htmlNode, "a", "href", nil)
+	expected := 2
+	if len(tags) < expected {
+		t.Errorf("result '%d', expected '%d'", len(tags), expected)
+	}
 }
