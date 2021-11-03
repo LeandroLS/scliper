@@ -71,7 +71,6 @@ func TestGetHtmlTags(t *testing.T) {
 	<a href="test2.golang">
 `)
 	htmlNode := ParseHtml(sReader)
-	fmt.Println(htmlNode)
 	tags := GetHtmlTags(htmlNode, "a", "href", nil)
 	expected := 2
 	if len(tags) < expected {
@@ -84,14 +83,15 @@ func TestLogCreatedFileMessage(t *testing.T) {
 	tmpdir := t.TempDir()
 	file := CreateFile(tmpdir+"TestCreateFile", extension)
 	fileStruct := CreateFileStruct(file)
+	fileStat, _ := file.Stat()
 	file.Close()
 	buffer := bytes.Buffer{}
 	LogCreatedFileMessage(&buffer, fileStruct)
-	expected := `-------------------
+	expected := fmt.Sprintf(`-------------------
 File created! 😀
-Name: 001TestCreateFile.html
+Name: %s
 Size: 0 bytes
 Extension: .html
--------------------`
+-------------------`, fileStat.Name())
 	checkIfIsExpected(t, buffer.String(), expected)
 }
