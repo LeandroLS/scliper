@@ -12,5 +12,5 @@ func DownloadHtmlFromSite(site string) {
 	file := CreateFile(site, ".html")
 	WriteInFile(file, body)
 	fileCreated := CreateFileStruct(file)
-	LogCreatedFileMessage(fileCreated, "HTML")
+	LogCreatedFileMessage(fileCreated)
 }

@@ -84,7 +84,7 @@ func CreateFileStruct(file *os.File) File {
 	return fileCreated
 }
 
-func LogCreatedFileMessage(file File, fileType string) {
+func LogCreatedFileMessage(file File) {
 	templateStr := `-------------------
 File created! 😀
 Name: {{ .Name }}
