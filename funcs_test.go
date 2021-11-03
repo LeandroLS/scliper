@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"strings"
 	"testing"
@@ -76,4 +77,21 @@ func TestGetHtmlTags(t *testing.T) {
 	if len(tags) < expected {
 		t.Errorf("result '%d', expected '%d'", len(tags), expected)
 	}
+}
+
+func TestLogCreatedFileMessage(t *testing.T) {
+	extension := ".html"
+	tmpdir := t.TempDir()
+	file := CreateFile(tmpdir+"TestCreateFile", extension)
+	fileStruct := CreateFileStruct(file)
+	file.Close()
+	buffer := bytes.Buffer{}
+	LogCreatedFileMessage(&buffer, fileStruct)
+	expected := `-------------------
+File created! 😀
+Name: 001TestCreateFile.html
+Size: 0 bytes
+Extension: .html
+-------------------`
+	checkIfIsExpected(t, buffer.String(), expected)
 }

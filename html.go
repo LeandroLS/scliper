@@ -2,6 +2,7 @@ package main
 
 import (
 	"io"
+	"os"
 )
 
 func DownloadHtmlFromSite(site string) {
@@ -12,5 +13,5 @@ func DownloadHtmlFromSite(site string) {
 	file := CreateFile(site, ".html")
 	WriteInFile(file, body)
 	fileCreated := CreateFileStruct(file)
-	LogCreatedFileMessage(fileCreated)
+	LogCreatedFileMessage(os.Stdout, fileCreated)
 }

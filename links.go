@@ -43,7 +43,7 @@ func writeInLinksJsonFile(file *os.File, links []string) {
 	jsonLinks, err := json.MarshalIndent(links, "", "	")
 	HandleErr(err)
 	fileCreated := CreateFileStruct(file)
-	LogCreatedFileMessage(fileCreated)
+	LogCreatedFileMessage(os.Stdout, fileCreated)
 	WriteInFile(file, jsonLinks)
 }
 

@@ -84,17 +84,16 @@ func CreateFileStruct(file *os.File) File {
 	return fileCreated
 }
 
-func LogCreatedFileMessage(file File) {
+func LogCreatedFileMessage(writer io.Writer, file File) {
 	templateStr := `-------------------
 File created! 😀
 Name: {{ .Name }}
 Size: {{ .Size }} bytes
 Extension: {{ .Extension }}
--------------------
-`
+-------------------`
 	tmpl, err := template.New("LogMessage").Parse(templateStr)
 	HandleErr(err)
-	err = tmpl.Execute(os.Stdout, file)
+	err = tmpl.Execute(writer, file)
 	HandleErr(err)
 }
 
