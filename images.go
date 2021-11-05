@@ -10,7 +10,7 @@ import (
 func writeInImgHtmlFile(file *os.File, links []string) {
 	var strWithLinks string
 	for i := 0; i < len(links); i++ {
-		strWithLinks += fmt.Sprintf("<img src=\"%s\"></img> \n", links[i])
+		strWithLinks += fmt.Sprintf(`<img src="%s"></img> \n`, links[i])
 	}
 	fileCreated := CreateFileStruct(file)
 	LogCreatedFileMessage(os.Stdout, fileCreated)

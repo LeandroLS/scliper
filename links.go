@@ -36,10 +36,6 @@ func getLinksFromHtml(htmlFile string) []string {
 }
 
 func writeInLinksJsonFile(file *os.File, links []string) {
-	var strWithLinks string
-	for i := 0; i < len(links); i++ {
-		strWithLinks += links[i] + "\n"
-	}
 	jsonLinks, err := json.MarshalIndent(links, "", "	")
 	HandleErr(err)
 	fileCreated := CreateFileStruct(file)
