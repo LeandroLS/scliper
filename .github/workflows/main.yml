@@ -1,3 +1,4 @@
+name: hello world from docker
 on: [push]
 
 jobs:
