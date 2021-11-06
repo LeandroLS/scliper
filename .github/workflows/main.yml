@@ -8,7 +8,7 @@ jobs:
     steps:
       - name: Hello world action step
         id: hello
-        uses: LeandroLS/hello-world-docker-action@v1.1
+        uses: LeandroLS/hello-world-docker-action@master
         with:
           who-to-greet: 'Leandro :D'
       # Use the output from the `hello` step
