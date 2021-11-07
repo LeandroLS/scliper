@@ -10,11 +10,11 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: 1.17
-      - name: test
-        uses: LeandroLS/test-go-action@main
       - name: Checkout
         uses: actions/checkout@v2
-      - name: autocommit
+      - name: Teste
+        uses: LeandroLS/test-go-action@main
+      - name: Autocommit
         uses: stefanzweifel/git-auto-commit-action@v4
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
