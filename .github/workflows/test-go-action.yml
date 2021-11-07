@@ -6,6 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to test
     steps:
+      - uses: actions/checkout@v2
       - name: test
         id: hello
         uses: LeandroLS/test-go-action@main
