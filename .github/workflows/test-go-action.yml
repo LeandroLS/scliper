@@ -6,14 +6,14 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to test
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
           go-version: 1.17
       - name: test
         uses: LeandroLS/test-go-action@main
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: autocommit
         uses: stefanzweifel/git-auto-commit-action@v4
         env:
